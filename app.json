@@ -1,0 +1,13 @@
+{
+    "pages": [
+  
+        "pages/shopDetail/shopDetail"
+        
+  
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#fff",
+        "navigationBarTextStyle": "black"
+    }
+}

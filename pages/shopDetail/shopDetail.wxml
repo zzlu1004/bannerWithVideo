@@ -1,0 +1,147 @@
+<!-- 店铺详情 -->
+<view class="dpxq-banner">
+    <view class='banner-wrapper'>
+        <swiper indicator-dots indicator-color="{{indicator}}" current="{{current}}" indicator-active-color="{{activeIndicator}}" class="bn-swiper" bindchange="bannerChage" duration="300">
+            <block wx:for="{{storeImgs}}" wx:key="bn_urls">
+                <swiper-item>
+                    <block wx:if="{{item.type == 1}}">
+                        <view wx:if="{{isPlay}}" class='video-wrapper'>
+                            <video src="{{item.src}}" class='video' controls id='myVideo'></video>
+                        </view>
+                        <view wx:else class='video-host-wrapper' catchtap='play'>
+                            <image src="{{storeImgs[1].src}}" mode='aspectFill' />
+                            <image src='/images/play.png' class='play-icon'></image>
+                        </view>
+                    </block>
+                    <image src="{{item.src}}" mode='aspectFill' catchtap='preview' data-url="{{item.src}}" wx:else/>
+                </swiper-item>
+            </block>
+        </swiper>
+        <view class='banner-mask' wx:if="{{isPlay}}">
+            <image src='/images/arrow.png' class='prev' catchtap='goPrev'></image>
+            <image src='/images/arrow.png' class='next' catchtap='goNext'></image>
+        </view>
+    </view>
+</view>
+<view class="main">
+    <view class="dpxq-content">
+        <view class="dpxx-art">
+            <!-- 会员特权  -->
+            <view class="mdxx-discuss" wx:if="{{privilege.length>0}}">
+                <view class="discuss-tit">
+                    <view class="tit-fg"></view>
+                    <text class="tit-char">会员特权</text>
+                </view>
+                <view class="welfare {{privilege.length>0?' ':'clearWelfare '}}" wx:if='{{privilege}} ' style="max-height:{{showFlag?'570rpx ':'auto '}}">
+                    <block wx:if='{{privilege.length>0}}'>
+                        <block wx:for='{{privilege}}' wx:key='key' wx:for-index='index' wx:for-item='item'>
+                            <view class='welfare-info' catchtap='welfareDetailTap' data-flid="{{item.fuli_id}}" data-sjid='{{item.shangjia_id}}'>
+                                <view class='welfare-cont'>
+                                    <image src="{{item.timeflag?'/images/long_sj.png':'/images/short_sj.png'}}" mode='aspectFill' class='welfare-cont-image'></image>
+
+                                    <view class='welfare-cont-art'>
+                                        <text class='welfare-art-name'>{{item.intro}}</text>
+                                        <view class='welfare-data-draw'>
+                                            <block wx:if="{{item.time_type}}">
+                                                <text class='welfare-art-date'>时间：{{item.stime}} - {{item.etime}}</text>
+                                            </block>
+                                            <block wx:else>
+                                                <text class='welfare-art-date'>时间：永久有效</text>
+                                            </block>
+                                            <block wx:if="{{item.is_took}}">
+                                                <text class='welfare-art-drawed'>已领</text>
+                                            </block>
+                                            <block wx:else>
+                                                <text class='welfare-art-draw' catchtap='checkDrawTap' data-fuliid="{{item.fuli_id}}" data-took='{{item.is_took}}' data-idx='{{index}}'>领取</text>
+                                            </block>
+                                        </view>
+                                    </view>
+                                </view>
+                                <view class='welfare-flag'>
+                                    <image src="{{item.time_type?'/images/welfare/short.png':'/images/welfare/long.png'}}" mode='aspectFill' class='welfare-flag-image'></image>
+                                </view>
+                            </view>
+                        </block>
+                    </block>
+                </view>
+                <block wx:if="{{privilegeInfo.length>3}}">
+                    <view class='welfare-more' wx:if="{{showFlag}}" catchtap='moreTap'>
+                        <text class='more-text'>查看更多</text>
+                        <image src='/images/xiala.png' mode='aspectFill' class='more-image'></image>
+                    </view>
+                </block>
+            </view>
+
+            <!-- 商家简介  -->
+            <view class="mdxx-discuss">
+                <view class="discuss-tit">
+                    <view class="tit-fg"></view>
+                    <text class="tit-char">商家简介</text>
+                </view>
+                <!-- <view class="discuss-content">
+                        {{storeInfo.desc||aboutImgs.length > 0?storeInfo.desc:'暂无内容'}} -->
+                <block wx:if="{{storeInfo.desc||aboutImgs.length > 0}}">
+                    <view class="discuss-content" wx:if="{{storeInfo.desc}}">{{storeInfo.desc}}</view>
+                    <view class="mdxx-content" wx:if="{{aboutImgs.length > 0}}">
+                        <block wx:for="{{aboutImgs}}" wx:key="url">
+                            <image src="{{item.src}}" class="mdxx-img" catchtap='previewAbout' mode='widthFix' data-url='{{item.src}}' />
+                        </block>
+                    </view>
+                </block>
+                <block wx:else>
+                    <view class="no-comments">暂无内容</view>
+                </block>
+            </view>
+            <!-- 小程序码  -->
+            <view class="mdxx-discuss" wx:if="{{detail.home_qrcode.length>0}}">
+                <view class="discuss-tit">
+                    <view class="tit-fg"></view>
+                    <text class="tit-char">专属小程序码</text>
+                </view>
+                <view class="code-info {{detail.home_qrcode.length>0?' ':'clearWelfare '}}">
+                        <image src="{{detail.home_qrcode}}" mode='aspectFill' class='code-image' catchtap='previewCodeImage' data-imgUrl=""></image>
+                </view>
+            </view>
+            <!--评价-->
+            <view class="mdxx-discuss">
+                <view class="discuss-tit">
+                    <view class="tit-fg"></view>
+                    <text class="tit-char">用户评论</text>
+                </view>
+                <block wx:if="{{comments}}">
+                    <block wx:if="{{comments.length > 0}}">
+                        <view class="discuss-content-wrapper" wx:for="{{comments}}" wx:for-item="item" wx:key="id" wx:for-index="idx">
+                            <view class="cont-icon">
+                                <image src="{{item.user.avatar}}" />
+                            </view>
+                            <view class="cont-art">
+
+                                <view class="cont-name">
+                                    <view class='cont-name-word'>{{item.user.nickname}}</view>
+                                    <view>{{item.created_at}}</view>
+                                </view>
+                                <view class="cont-des">
+                                    {{item.content}}
+                                </view>
+                                <view class='cont-img-wrapper' wx:if="{{item.comment_imgs.length > 0}}">
+                                    <image src='{{itemIn.src}}' wx:for="{{item.comment_imgs}}" wx:for-item="itemIn" wx:key="index" class='cont-img' mode='aspectFill' catchtap='previewCom' data-idx='{{idx}}' data-url="{{itemIn.src}}"></image>
+                                </view>
+                            </view>
+                        </view>
+                    </block>
+                    <view wx:else class='no-comments'>暂无评价</view>
+                </block>
+            </view>
+        </view>
+    </view>
+</view>
+
+<!-- 更多  -->
+<view class='shop-more' catchtap='otherMiniApp' wx:if="{{detail.other_appid.length>0}}">
+    <view class='shop-more-dots'>
+        <text class='shop-more-dot'></text>
+        <text class='shop-more-dot'></text>
+        <text class='shop-more-dot'></text>
+    </view>
+    <text class='shop-more-title'>更多</text>
+</view>
